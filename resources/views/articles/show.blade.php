@@ -12,7 +12,7 @@
             </div>
             <div class="mt-2">
                 <h2 class="font-extrabold text-2xl mb-0">{{ $article->title }}</h2>
-                <p class="mb-2 mt-0">{{ $article->content }}</p>
+                <p class="mb-2 mt-0 break-all">{{ $article->content }}</p>
                 <p class="">Prix : {{ $article->price }} €</p>
                 <p class="mb-4">Quantité : {{ $article->qte }}</p>
             </div>
