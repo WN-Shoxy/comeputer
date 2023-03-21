@@ -22,7 +22,7 @@
             @if (Route::has('login'))
                 <div class="flex justify-between items-center p-5 bg-noir text-white">
                     <div>
-                        <img src="" alt="#">
+                        <img src="{{url('/img/logo.png')}}" class="absolute w-16 -mt-8" alt="#">
                     </div>
                     <div class="">
                         <ul class="flex ml-44">
