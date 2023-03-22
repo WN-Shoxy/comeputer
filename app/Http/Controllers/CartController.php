@@ -2,61 +2,85 @@
 
 namespace App\Http\Controllers;
 
-
-use Illuminate\Http\Request;
-
-use App\Http\Repositories\CartInterfaceRepository;
-
+use App\Http\Controllers\Controller;
 use App\Models\Article;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CartController extends Controller
 {
-    
-	protected $cartRepository; // L'instance BasketSessionRepository
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
 
-    public function __construct (CartInterfaceRepository $cartRepository) {
-		dd('salut');
-    	$this->cartRepository = $cartRepository;
+		$article = Article::latest()->get();
+        
+        return view("cart.index", compact("cart"));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
 
     }
 
-    # Affichage du panier
-    public function show () {
-		
-    	return view("cart.show"); // resources\views\cart\show.blade.php
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request,Article $article)
+    {
+        // 1. La validation
+        $this->validate($request, [
+            'title' => 'bail|required|string|max:255',
+            "price" => 'bail|required|int|max:1000',
+            "qte" => 'bail|required|int|max:10',
+        ]);
+        
+        // 3. On enregistre les informations du Post
+        Article::create([
+            "title" => $request->title,
+            "price" => $request->price,
+            "qte" => $request->qte,
+        ]);
+        
+        // 4. On retourne vers tous les posts : route("posts.index")
+
+        return redirect(route("articles.index"));
     }
 
-    # Ajout d'un produit au panier
-    public function add (Article $article, Request $request) {
-    	
-    	// Validation de la requête
-
-    	// Ajout/Mise à jour du produit au panier avec sa quantité
-    	$this->cartRepository->add($article, $request->quantity);
-
-    	// Redirection vers le panier avec un message
-    	return redirect()->route("cart.show")->withMessage("Article ajouté au panier");
+    /**
+     * Display the specified resource.
+     */
+    public function show(Article $article)
+    {
+        return view("cart.show", compact("article"));
     }
 
-    // Suppression d'un produit du panier
-    public function remove (Article $article) {
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Article $article)
+    {
 
-    	// Suppression du produit du panier par son identifiant
-    	$this->cartRepository->remove($article);
-
-    	// Redirection vers le panier
-    	return back()->withMessage("Article retiré du panier");
     }
 
-    // Vider la panier
-    public function empty () {
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Article $article)
+    {
+   
+    }
 
-    	// Suppression des informations du panier en session
-    	$this->cartRepository->empty();
-
-    	// Redirection vers le panier
-    	return back()->withMessage("Panier vidé");
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Article $article)
+    {
 
     }
 }
